@@ -30,7 +30,8 @@ module mkFIRFilter (AudioProcessor);
         Vector#(9,FixedPoint#(16,16)) res;
         res[0] <- m[0].getResult();
         for(Integer i = 1; i < 9; i = i + 1) begin
-            res[i] = res[i-1] + m[i].getResult();
+            let t <- m[i].getResult();
+            res[i] = res[i-1] + t;
         end
         outfifo.enq(fxptGetInt(res[8]));
     endrule

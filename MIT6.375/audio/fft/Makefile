@@ -1,4 +1,4 @@
-bscflags = -keep-fires -aggressive-conditions -Xc++ -D_GLIBCXX_USE_CXX11_ABI=0
+bscflags = -keep-fires -aggressive-conditions
 bsvdir = ../common:../fir
 build_dir = bscdir
 synth_dir = /tmp/6375-lab2-${USER}
