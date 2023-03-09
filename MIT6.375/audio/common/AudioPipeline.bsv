@@ -1,4 +1,4 @@
-
+import FilterCoefficients::*;
 import ClientServer::*;
 import GetPut::*;
 
@@ -8,9 +8,14 @@ import FFT::*;
 import FIRFilter::*;
 import Splitter::*;
 
+import Complex::*;
+
+typedef 16 I_SIZE;
+typedef 16 F_SIZE;
+
 module mkAudioPipeline(AudioProcessor);
 
-    AudioProcessor fir <- mkFIRFilter();
+    AudioProcessor fir <- mkFIRFilter(c);
     Chunker#(FFT_POINTS, ComplexSample) chunker <- mkChunker();
     FFT fft <- mkFFT();
     FFT ifft <- mkIFFT();
@@ -35,7 +40,7 @@ module mkAudioPipeline(AudioProcessor);
         let x <- ifft.response.get();
         splitter.request.put(x);
     endrule
-    
+
     method Action putSampleInput(Sample x);
         fir.putSampleInput(x);
     endmethod

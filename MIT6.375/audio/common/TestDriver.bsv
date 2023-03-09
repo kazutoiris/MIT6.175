@@ -4,10 +4,12 @@ import Counter::*;
 import FIRFilter::*;
 import AudioProcessorTypes::*;
 
+import AudioPipeline::*;
+
 (* synthesize *)
 module mkTestDriver (Empty);
 
-    AudioProcessor pipeline <- mkFIRFilter();
+    AudioProcessor pipeline <- mkAudioPipeline();
 
     Reg#(File) m_in <- mkRegU();
     Reg#(File) m_out <- mkRegU();
