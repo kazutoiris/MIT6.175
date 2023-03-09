@@ -1,6 +1,7 @@
 import FilterCoefficients::*;
 import ClientServer::*;
 import GetPut::*;
+import FixedPoint::*;
 
 import AudioProcessorTypes::*;
 import Chunker::*;
@@ -12,13 +13,15 @@ import Complex::*;
 
 typedef 16 I_SIZE;
 typedef 16 F_SIZE;
+typedef 8 N;
+typedef 16 P_SIZE;
 
 module mkAudioPipeline(AudioProcessor);
 
     AudioProcessor fir <- mkFIRFilter(c);
     Chunker#(FFT_POINTS, ComplexSample) chunker <- mkChunker();
-    FFT fft <- mkFFT();
-    FFT ifft <- mkIFFT();
+    FFT#(N,FixedPoint#(I_SIZE, P_SIZE)) fft <- mkFFT();
+    FFT#(N,FixedPoint#(I_SIZE, P_SIZE)) ifft <- mkIFFT();
     Splitter#(FFT_POINTS, ComplexSample) splitter <- mkSplitter();
 
     rule fir_to_chunker (True);
