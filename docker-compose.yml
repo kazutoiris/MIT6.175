@@ -1,0 +1,7 @@
+version: "3.9" # Compose Specification 的版本
+services:
+  connectal: # 服务名称
+    image: kazutoiris/connectal:latest # 镜像名称
+    volumes:
+      - .:/data # 映射 /root 目录
+    network_mode: none # 不连接网络
