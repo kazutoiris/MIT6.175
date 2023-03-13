@@ -21,7 +21,7 @@ module mkFIRFilter(Vector#(tnp1, FixedPoint#(16, 16)) coeffs, AudioProcessor ifc
             r[i+1] <= r[i];
         end
         m[0].putOperands(coeffs[0], sample);
-        for(Integer i = 1; i < valueOf(tnp1) - 1; i = i + 1) begin
+        for(Integer i = 1; i < valueOf(tnp1); i = i + 1) begin
             m[i].putOperands(coeffs[i], r[i-1]);
         end
     endrule

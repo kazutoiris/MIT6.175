@@ -9,4 +9,4 @@ do
     exec $BLUESPECDIR/tcllib/bluespec/bluesim.tcl $0.so mkPitchAdjustTest --script_name `basename $0` -h
   fi
 done
-exec $BLUESPECDIR/tcllib/bluespec/bluesim.tcl $0.so mkPitchAdjustTest --script_name `basename $0` --creation_time 1678683996 "$@"
+exec $BLUESPECDIR/tcllib/bluespec/bluesim.tcl $0.so mkPitchAdjustTest --script_name `basename $0` --creation_time 1678709520 "$@"
