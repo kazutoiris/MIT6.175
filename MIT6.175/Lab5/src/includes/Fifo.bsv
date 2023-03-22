@@ -173,8 +173,8 @@ module mkCFFifo( Fifo#(n, t) ) provisos (Bits#(t,tSz));
 
     // requests
     Ehr#(3, Maybe#(t))      enqReq   <- mkEhr(tagged Invalid);
-    Ehr#(3, Maybe#(void))   deqReq   <- mkEhr(tagged Invalid);
-    Ehr#(2, Maybe#(void))   clearReq <- mkEhr(tagged Invalid);
+    Ehr#(3, Maybe#(Bit#(0)))   deqReq   <- mkEhr(tagged Invalid);
+    Ehr#(2, Maybe#(Bit#(0)))   clearReq <- mkEhr(tagged Invalid);
 
     // useful value
     Bit#(TLog#(n))          max_index = fromInteger(valueOf(n)-1);
@@ -243,7 +243,7 @@ module mkCFFifo( Fifo#(n, t) ) provisos (Bits#(t,tSz));
 
     method Action deq if( !empty );
         // Tell later stages a dequeue was requested
-        deqReq[0] <= tagged Valid;
+        deqReq[0] <= tagged Valid 0;
     endmethod
 
     method t first if( !empty );
@@ -256,7 +256,7 @@ module mkCFFifo( Fifo#(n, t) ) provisos (Bits#(t,tSz));
         enqReq[1] <= tagged Invalid;
         deqReq[1] <= tagged Invalid;
         // Tell later stages a clear was requested
-        clearReq[0] <= tagged Valid;
+        clearReq[0] <= tagged Valid 0;
     endmethod
 endmodule
 
