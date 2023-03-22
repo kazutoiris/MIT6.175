@@ -6,10 +6,13 @@ import AudioProcessorTypes::*;
 
 import AudioPipeline::*;
 
+import GetPut::*;
+
 (* synthesize *)
 module mkTestDriver (Empty);
 
-    AudioProcessor pipeline <- mkAudioPipeline();
+    SettableAudioProcessor#(I_SIZE, F_SIZE) settableAudioProcessor <- mkAudioPipeline();
+    AudioProcessor pipeline = settableAudioProcessor.audioProcessor;
 
     Reg#(File) m_in <- mkRegU();
     Reg#(File) m_out <- mkRegU();
@@ -21,6 +24,8 @@ module mkTestDriver (Empty);
 
     rule init(!m_inited);
         m_inited <= True;
+
+        settableAudioProcessor.setFactor.put(fromInteger(valueOf(2)));
 
         File in <- $fopen("in.pcm", "rb");
         if (in == InvalidFile) begin

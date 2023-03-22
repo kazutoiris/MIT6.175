@@ -15,12 +15,23 @@ typedef Server#(
 ) PitchAdjust#(numeric type nbins, numeric type isize, numeric type fsize, numeric type psize);
 
 
+interface SettablePitchAdjust#(
+        numeric type nbins, numeric type isize,
+        numeric type fsize, numeric type psize
+    );
+
+    interface PitchAdjust#(nbins, isize, fsize, psize) pitchAdjust;
+    interface Put#(FixedPoint#(isize, fsize)) setFactor;
+endinterface
+
 // s - the amount each window is shifted from the previous window.
 //
 // factor - the amount to adjust the pitch.
 //  1.0 makes no change. 2.0 goes up an octave, 0.5 goes down an octave, etc...
-module mkPitchAdjust(Integer s, FixedPoint#(isize, fsize) factor, PitchAdjust#(nbins, isize, fsize, psize) ifc)
+module mkPitchAdjust(Integer s, SettablePitchAdjust#(nbins, isize, fsize, psize) ifc)
     provisos(Add#(a__, psize, TAdd#(isize, isize)), Add#(psize, b__, isize), Add#(c__, TLog#(nbins), isize), Add#(TAdd#(TLog#(nbins), 1), d__, isize));
+
+    Reg#(FixedPoint#(isize, fsize)) factor <- mkReg(unpack(2));
 
     // complex double* in, complex double* out
     Reg#(Vector#(nbins, ComplexMP#(isize, fsize, psize))) in <- mkReg(unpack(0));
@@ -76,11 +87,15 @@ module mkPitchAdjust(Integer s, FixedPoint#(isize, fsize) factor, PitchAdjust#(n
         outputFIFO.enq(out);
     endrule
 
-    interface Put request;
-        method Action put(Vector#(nbins, ComplexMP#(isize, fsize, psize)) x);
-            inputFIFO.enq(x);
-        endmethod
+
+    interface PitchAdjust pitchAdjust;
+        interface Put request = toPut(inputFIFO);
+        interface Get response = toGet(outputFIFO);
     endinterface
 
-    interface Get response = toGet(outputFIFO);
+    interface Put setFactor;
+        method Action put(FixedPoint#(isize, fsize) x);
+            factor <= x;
+        endmethod
+    endinterface
 endmodule

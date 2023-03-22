@@ -12,7 +12,9 @@ import ComplexMP::*;
 module mkPitchAdjustTest (Empty);
 
     // For nbins = 8, S = 2, pitch factor = 2.0
-    PitchAdjust#(8, 16, 16, 16) adjust <- mkPitchAdjust(2, 2);
+    SettablePitchAdjust#(8, 16, 16, 16) settablePitchAdjust <- mkPitchAdjust(2);
+    PitchAdjust#(8, 16, 16, 16) pitchAdjust = settablePitchAdjust.pitchAdjust;
+    pitch.setFactor.put(2);
 
     Reg#(Bool) passed <- mkReg(True);
     Reg#(Bit#(32)) feed <- mkReg(0);
@@ -36,7 +38,7 @@ module mkPitchAdjustTest (Empty);
             check <= check+1;
         endaction
     endfunction
-    
+
     Vector#(8, ComplexMP#(16, 16, 16)) ti1 = newVector;
     ti1[0] = cmplxmp(1.000000, tophase(3.141593));
     ti1[1] = cmplxmp(1.000000, tophase(-1.570796));
@@ -97,10 +99,10 @@ module mkPitchAdjustTest (Empty);
     to3[6] = cmplxmp(14.801873, tophase(-2.4597));
     to3[7] = cmplxmp(0.000000, tophase(0.000000));
 
-    rule f0 (feed == 0); dofeed(ti1); endrule
+    rule f0 (feed == 0); settablePitchAdjust.setFactor.put(2.0); dofeed(ti1); endrule
     rule f1 (feed == 1); dofeed(ti2); endrule
     rule f2 (feed == 2); dofeed(ti3); endrule
-    
+
     rule c0 (check == 0); docheck(to1); endrule
     rule c1 (check == 1); docheck(to2); endrule
     rule c2 (check == 2); docheck(to3); endrule

@@ -9,12 +9,14 @@ import FShow::*;
 
 import AudioPipeline::*;
 import AudioProcessorTypes::*;
+import FixedPoint::*;
 
 // interface used by software
 interface MyDutRequest;
     // Bit#(n) is the only supported argument type for request methods
     method Action putSampleInput (Bit#(16) in);
     method Action reset_dut();
+    method Action setFactor (Bit#(32) factor);
 endinterface
 
 // interface used by hardware to send a message back to software
@@ -41,7 +43,8 @@ module mkMyDut#(MyDutIndication indication) (MyDut);
     endrule
 
     // Your design
-    AudioProcessor ap <- mkAudioPipeline(reset_by my_rst.new_rst);
+    SettableAudioProcessor#(16, 16) settableAudioProcessor <- mkAudioPipeline(reset_by my_rst.new_rst);
+    AudioProcessor ap = settableAudioProcessor.audioProcessor;
 
     // Send a message back to sofware whenever the response is ready
     rule indicationToSoftware;
@@ -62,6 +65,11 @@ module mkMyDut#(MyDutIndication indication) (MyDut);
         method Action reset_dut;
             my_rst.assertReset; // assert my_rst.new_rst signal
             isResetting <= True;
+        endmethod
+
+        method Action setFactor (Bit#(32) factor_int);
+            FixedPoint#(16, 16) factor = unpack(factor_int);
+            settableAudioProcessor.setFactor.put(factor);
         endmethod
     endinterface
 endmodule

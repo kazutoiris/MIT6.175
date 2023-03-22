@@ -1,11 +1,17 @@
 import Complex::*;
 import FixedPoint::*;
+import GetPut::*;
 
 typedef Int#(16) Sample;
 
 interface AudioProcessor;
     method Action putSampleInput(Sample in);
     method ActionValue#(Sample) getSampleOutput();
+endinterface
+
+interface SettableAudioProcessor#(numeric type isize, numeric type fsize);
+    interface AudioProcessor audioProcessor;
+    interface Put#(FixedPoint#(isize, fsize)) setFactor;
 endinterface
 
 // Turn a real Sample into a ComplexSample.
