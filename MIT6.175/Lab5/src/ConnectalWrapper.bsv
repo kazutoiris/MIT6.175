@@ -15,6 +15,21 @@ import TwoStageBTB::*;
 `ifdef FOURCYCLE
 import FourCycle::*;
 `endif
+`ifdef SIXSTAGE
+import SixStage::*;
+`endif
+
+`ifdef SIXSTAGEBHT
+import SixStageBHT::*;
+`endif
+
+`ifdef SIXSTAGERAS
+import SixStageRAS::*;
+`endif
+
+`ifdef SIXSTAGEBONUS
+import SixStageBonus::*;
+`endif
 
 import Ifc::*;
 import ProcTypes::*;
@@ -30,7 +45,7 @@ module [Module] mkConnectalWrapper#(ConnectalProcIndication ind)(ConnectalWrappe
 
    rule relayMessage;
 	let mess <- m.cpuToHost();
-        ind.sendMessage(pack(mess));	
+        ind.sendMessage(pack(mess));
    endrule
    interface ConnectalProcRequest connectProc;
       method Action hostToCpu(Bit#(32) startpc);
