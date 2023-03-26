@@ -16,8 +16,9 @@ CPPFILES += \
 #CONNECTALFLAGS += --verilog=ddr3_v2_0/
 SOFTWARE_SOCKET_NAME=/tmp/connectal$(USER)
 export SOFTWARE_SOCKET_NAME
+CONNECTALFLAGS += -D CORE_NUM=1
 CONNECTALFLAGS += -D $(VPROC)
-CONNECTALFLAGS += --bscflags " -D $(VPROC) -steps-max-intervals 50 +RTS -K256M -RTS"
+CONNECTALFLAGS += --bscflags " -D CORE_NUM=1 -D $(VPROC) -steps-max-intervals 50 +RTS -K256M -RTS"
 CONNECTALFLAGS += --bscflags " -show-schedule"
 #CONNECTALFLAGS += --cxxflags="-g -std=gnu++11"
 
@@ -26,4 +27,3 @@ include $(CONNECTALDIR)/Makefile.connectal
 
 clean:
 	rm -rf bluesim
-

@@ -30,6 +30,7 @@ module mkBtb( Btb#(indexSize) ) provisos( Add#(indexSize,a__,32), NumAlias#(TSub
         end
     endmethod
 
+
     method Action update(Addr thisPc, Addr nextPc);
         if( nextPc != thisPc + 4 ) begin
             let index = getIndex(thisPc);
@@ -40,5 +41,18 @@ module mkBtb( Btb#(indexSize) ) provisos( Add#(indexSize,a__,32), NumAlias#(TSub
             targets[index] <= nextPc;
         end
     endmethod
+
+    // 1-BHT
+/*
+    method Action update(Addr thisPc, Addr nextPc);
+    	let index = getIndex(thisPc);
+        let tag = getTag(thisPc);
+        // update entry
+        valid[index] <= True;
+        tags[index] <= tag;
+        targets[index] <= nextPc;
+    endmethod
+*/
+
 endmodule
 
