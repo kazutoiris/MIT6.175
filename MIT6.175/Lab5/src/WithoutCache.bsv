@@ -78,8 +78,8 @@ module mkProc#(Fifo#(2, DDR3_Req) ddr3ReqFifo, Fifo#(2, DDR3_Resp) ddr3RespFifo)
     let                        wideMem <- mkWideMemFromDDR3(ddr3ReqFifo,ddr3RespFifo);
     Vector#(2, WideMem)       splitMem <- mkSplitWideMem(memReady && csrf.started, wideMem);
 
-    Cache iMem <- mkTranslator(splitMem[1]);
-    Cache dMem <- mkTranslator(splitMem[0]);
+    Cache iMem <- mkBypassCache(splitMem[1]);
+    Cache dMem <- mkBypassCache(splitMem[0]);
 
     rule drainMemResponses(!csrf.started);
         $display("drain!");

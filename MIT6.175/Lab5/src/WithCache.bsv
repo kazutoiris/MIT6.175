@@ -80,7 +80,6 @@ function Bool isJalrReturn(Data inst);
     return rd == 5'b00000 && rs1 == 5'b00001;
 endfunction
 
-
 module mkProc#(Fifo#(2, DDR3_Req) ddr3ReqFifo, Fifo#(2, DDR3_Resp) ddr3RespFifo)(Proc);
 
     Ehr#(2,Addr)    pcReg<-mkEhr(?);
@@ -97,8 +96,9 @@ module mkProc#(Fifo#(2, DDR3_Req) ddr3ReqFifo, Fifo#(2, DDR3_Resp) ddr3RespFifo)
     Fifo#(2,Execute2Memory)     e2mFifo     <-  mkCFFifo;
     Fifo#(2,Memory2WriteBack)   m2wbFifo    <-  mkCFFifo;
 
-    Reg#(Bool)                  exeEpoch    <-mkReg(False);
-    Reg#(Bool)                  decEpoch    <-mkReg(False);
+    Reg#(Bool)                  exeEpoch    <- mkReg(False);
+    Reg#(Bool)                  decEpoch    <- mkReg(False);
+    Reg#(Int#(64))              count       <- mkReg(0);
 
     Ehr#(2,Maybe#(ExeRedirect)) exeRedirect <-mkEhr(Invalid);
     Ehr#(2,Maybe#(DecRedirect)) decRedirect <-mkEhr(Invalid);
@@ -113,6 +113,14 @@ module mkProc#(Fifo#(2, DDR3_Req) ddr3ReqFifo, Fifo#(2, DDR3_Resp) ddr3RespFifo)
     rule drainMemResponses( !csrf.started );
         $display("drain!");
         ddr3RespFifo.deq;
+    endrule
+
+    rule forceStop(csrf.started);
+        count <= count + 1;
+        if (count == 500000) begin
+            $display("force stop!");
+            $finish;
+        end
     endrule
 
     rule doFetch(csrf.started);
@@ -236,8 +244,8 @@ module mkProc#(Fifo#(2, DDR3_Req) ddr3ReqFifo, Fifo#(2, DDR3_Resp) ddr3RespFifo)
             let exeInst = fromMaybe(?, e2m.eInst);
             if (exeInst.iType == Ld) begin
                 dMem.req(MemReq { op: Ld, addr: exeInst.addr, data: ? });
-            end else if (exeInst.iType==St) begin
-                let d <- dMem.req(MemReq{ op: St, addr: exeInst.addr, data: exeInst.data });
+            end else if (exeInst.iType == St) begin
+                let d <- dMem.req(MemReq { op: St, addr: exeInst.addr, data: exeInst.data });
             end
         end
         let m2wb = Memory2WriteBack{
