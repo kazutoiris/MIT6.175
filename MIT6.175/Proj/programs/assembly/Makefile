@@ -4,10 +4,10 @@
 
 asmdir := $(CURDIR)
 
-build_dir := $(asmdir)/../build/assembly
-bin_dir := $(build_dir)/bin
-dump_dir := $(build_dir)/dump
-vmh_dir := $(build_dir)/vmh
+asm_build_dir := $(asmdir)/../build/assembly
+asm_build_bin_dir := $(asm_build_dir)/bin
+asm_build_dump_dir := $(asm_build_dir)/dump
+asm_build_vmh_dir := $(asm_build_dir)/vmh
 
 default: all
 
@@ -31,73 +31,81 @@ rv32ui_tests = \
 	srl srli \
 	sub \
 	xor xori \
-	bpred_bht bpred_j bpred_ras bpred_j_noloop \
-	cache cache_conflict stq \
+	bpred_bht bpred_j bpred_ras \
+	cache \
 
 #--------------------------------------------------------------------
 # Build rules
 #--------------------------------------------------------------------
 
-#RISCV_TOOL_DIR := /mit/6.175/rv32-gcc/bin
-RISCV_TOOL_DIR := /home/adam/riscv32-special-a/bin
-
-RISCV_PREFIX := $(RISCV_TOOL_DIR)/riscv32-unknown-elf
+RISCV_TOOL_DIR = $(abspath ../../../../riscv/bin)
+RISCV_PREFIX = $(RISCV_TOOL_DIR)/riscv32-unknown-elf
 # gcc
-RISCV_GCC := $(RISCV_PREFIX)-gcc
-#RISCV_GCC_OPTS := -m32 -static -fvisibility=hidden -nostdlib -nostartfiles -Wa,-march=RVI
-RISCV_GCC_OPTS := -static -fvisibility=hidden -nostdlib -nostartfiles -Wa,-march=rv32ia
+RISCV_GCC = $(RISCV_PREFIX)-gcc
+#RISCV_GCC_OPTS =  -m32 -static -fvisibility=hidden -nostdlib -nostartfiles -Wa,-march=RVI
+RISCV_GCC_OPTS = -static -fvisibility=hidden -nostdlib -nostartfiles -Wa,-march=rv32i -mabi=ilp32
 
 incs := -I$(asmdir)/../env -I$(asmdir)/macros
 # link
-RISCV_LINK_OPTS := -T$(asmdir)/link.ld
+RISCV_LINK_OPTS = -T$(asmdir)/link.ld
 # objdump
-RISCV_OBJDUMP := $(RISCV_PREFIX)-objdump --disassemble --disassemble-zeroes --section=.text --section=.text.startup --section=.data
-# convert to VMH: 16KB memory
-RISCV_ELF2HEX := $(RISCV_TOOL_DIR)/elf2hex
-VMH_WIDTH := 8
-VMH_DEPTH := 16384
+RISCV_OBJDUMP = $(RISCV_PREFIX)-objdump --disassemble --disassemble-zeroes --section=.text --section=.text.startup --section=.data
+# convert to VMH: 64KB memory
+ELF2HEX_TOOL_DIR = /home/hengyu/tools/rv_tools/bin
+RISCV_ELF2HEX = $(ELF2HEX_TOOL_DIR)/elf2hex
+VMH_WIDTH = 8
+VMH_DEPTH = 65536
+
+VPATH += $(asmdir)/src
+VPATH += $(asmdir)/macros
+VPATH += $(asm_build_bin_dir)
+VPATH += $(asm_build_dump_dir)
+VPATH += $(asm_build_vmh_dir)
 
 #------------------------------------------------------------
 # Build assembly tests
 
-rv32ui_tests_bin  := $(patsubst %,$(bin_dir)/%.riscv, $(rv32ui_tests))
-rv32ui_tests_dump := $(patsubst %,$(dump_dir)/%.riscv.dump, $(rv32ui_tests))
-rv32ui_tests_vmh  := $(patsubst %,$(vmh_dir)/%.riscv.vmh, $(rv32ui_tests))
+rv32ui_tests_bin  = $(addsuffix .riscv, $(rv32ui_tests))
+rv32ui_tests_dump = $(addsuffix .riscv.dump, $(rv32ui_tests))
+rv32ui_tests_vmh = $(addsuffix .riscv.vmh, $(rv32ui_tests))
 
-$(rv32ui_tests_vmh): $(vmh_dir)/%.riscv.vmh: $(bin_dir)/%.riscv
-	@echo "@0" > $(vmh_dir)/temp
-	$(RISCV_ELF2HEX) $(VMH_WIDTH) $(VMH_DEPTH) $< >> $(vmh_dir)/temp
-	python $(asmdir)/../trans_vmh.py $(vmh_dir)/temp $@
+$(rv32ui_tests_bin): %.riscv: %.S
+	$(RISCV_GCC) $(RISCV_GCC_OPTS) $(incs) $(RISCV_LINK_OPTS) $< -o $(asm_build_bin_dir)/$@
 
-$(rv32ui_tests_dump): $(dump_dir)/%.riscv.dump: $(bin_dir)/%.riscv
-	$(RISCV_OBJDUMP) $< > $@
+$(rv32ui_tests_vmh): %.riscv.vmh: %.riscv
+	@echo $(basename $<)
+	@echo "@0" > $(asm_build_vmh_dir)/temp
+	$(RISCV_ELF2HEX) $(VMH_WIDTH) $(VMH_DEPTH) $(asm_build_bin_dir)/$< >> $(asm_build_vmh_dir)/temp
+	# $(RISCV_ELF2HEX) --bit-width $(VMH_WIDTH) --input $< >> $(asm_build_vmh_dir)/temp
+	python $(asmdir)/../trans_vmh.py $(asm_build_vmh_dir)/temp $(asm_build_vmh_dir)/$@
 
-$(rv32ui_tests_bin): $(bin_dir)/%.riscv: $(asmdir)/src/%.S
-	$(RISCV_GCC) $(RISCV_GCC_OPTS) $(incs) $(RISCV_LINK_OPTS) $< -o $@
+
+$(rv32ui_tests_dump): %.riscv.dump: %.riscv
+	$(RISCV_OBJDUMP) $(asm_build_bin_dir)/$< > $(asm_build_dump_dir)/$@
 
 #------------------------------------------------------------
 # Default
-$(bin_dir):
+$(asm_build_bin_dir):
 	mkdir -p $@
 
-$(obj_dir):
+$(asm_build_obj_dir):
 	mkdir -p $@
 
-$(dump_dir):
+$(asm_build_dump_dir):
 	mkdir -p $@
 
-$(vmh_dir):
+$(asm_build_vmh_dir):
 	mkdir -p $@
 
 
-all: $(bin_dir) $(obj_dir) $(dump_dir) $(vmh_dir) $(rv32ui_tests_dump) $(rv32ui_tests_vmh)
+all: $(asm_build_bin_dir) $(asm_build_obj_dir) $(asm_build_dump_dir) $(asm_build_vmh_dir) $(rv32ui_tests_dump) $(rv32ui_tests_vmh)
 
 
 #------------------------------------------------------------
 # Clean up
 
 clean:
-	rm -rf $(build_dir)
+	rm -rf $(asm_build_dir)
 
 
 .PHONY: all clean

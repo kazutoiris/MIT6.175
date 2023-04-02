@@ -31,15 +31,15 @@ enum ToHostTag {
 void printInt(uint32_t c) {
 	// print low 16 bits
 	int lo = (c & 0x0000FFFF) | (((uint32_t)PrintIntLow) << 16);
-	asm volatile ("csrw mtohost, %0" : : "r" (lo));
+	asm volatile ("csrw mcontext, %0" : : "r" (lo));
 	// print high 16 bits
 	int hi = (c >> 16) | (((uint32_t)PrintIntHigh) << 16);
-	asm volatile ("csrw mtohost, %0" : : "r" (hi));
+	asm volatile ("csrw mcontext, %0" : : "r" (hi));
 }
 
 void printChar(uint32_t c) {
 	c = (c & 0x0000FFFF) | (((uint32_t)PrintChar) << 16);
-  asm volatile ("csrw mtohost, %0" : : "r" (c));
+  asm volatile ("csrw mcontext, %0" : : "r" (c));
 }
 
 void printStr(char* x) {
@@ -59,9 +59,13 @@ void printStr(char* x) {
 
 void toHostExit(uint32_t ret) {
 	ret = (ret & 0x0000FFFF) | (((uint32_t) ExitCode) << 16);
-	asm volatile ("csrw mtohost, %0" : : "r" (ret));
+	asm volatile ("csrw mcontext, %0" : : "r" (ret));
 	// stall here
 	while(1);
+}
+
+long handle_trap(long cause, long epc, long regs[32]) {
+  return epc+4;
 }
 
 int __attribute__((weak)) main(int argc, char** argv) {

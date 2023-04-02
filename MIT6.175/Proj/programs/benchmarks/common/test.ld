@@ -32,7 +32,7 @@ SECTIONS
   .data : { *(.data) }
 
   .sdata : {
-    _gp_ptr = . + 0x800;
+    _gp = . + 0x800;
     *(.srodata.cst16) *(.srodata.cst8) *(.srodata.cst4) *(.srodata.cst2) *(.srodata*)
     *(.sdata .sdata.* .gnu.linkonce.s.*)
   }

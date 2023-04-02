@@ -76,8 +76,8 @@ Opcode opSystem  = 7'b1110011;
 typedef Bit#(12) CsrIndx;
 CsrIndx csrInstret = 12'hc02;
 CsrIndx csrCycle   = 12'hc00;
-CsrIndx csrMhartid = 12'hf10;
-CsrIndx csrMtohost = 12'h780;
+CsrIndx csrMhartid = 12'hf14;
+CsrIndx csrMtohost = 12'h7a8;
 
 // store conditional results
 Data scSucc = 0;
@@ -86,22 +86,22 @@ Data scFail = 1;
 // LR, SC, FENCE not implemented
 // LB(U), LH(U), SB, SH not implemented
 
-// For CSR, only following two are implemented 
+// For CSR, only following two are implemented
 // CSRR rd csr (i.e. CSRRS rd csr x0)
 // CSRW csr rs1 (i.e. CSRRW x0 csr rs1)
 
 // SCALL, SBREAK not implemented
 
 typedef enum {
-	Unsupported, 
-	Alu, 
-	Ld, 
-	St, 
-	J, 
-	Jr, 
-	Br, 
-	Csrr, 
-	Csrw, 
+	Unsupported,
+	Alu,
+	Ld,
+	St,
+	J,
+	Jr,
+	Br,
+	Csrr,
+	Csrw,
 	Auipc,
 	Lr,
 	Sc,
@@ -109,26 +109,26 @@ typedef enum {
 } IType deriving(Bits, Eq, FShow);
 
 typedef enum {
-	Eq, 
-	Neq, 
-	Lt, 
-	Ltu, 
-	Ge, 
-	Geu, 
-	AT, 
+	Eq,
+	Neq,
+	Lt,
+	Ltu,
+	Ge,
+	Geu,
+	AT,
 	NT
 } BrFunc deriving(Bits, Eq, FShow);
 
 typedef enum {
-	Add, 
-	Sub, 
-	And, 
-	Or, 
-	Xor, 
-	Slt, 
-	Sltu, 
-	Sll, 
-	Sra, 
+	Add,
+	Sub,
+	And,
+	Or,
+	Xor,
+	Slt,
+	Sltu,
+	Sll,
+	Sra,
 	Srl
 } AluFunc deriving(Bits, Eq, FShow);
 
@@ -357,4 +357,3 @@ function Fmt showInst(Instruction inst);
   return ret;
 
 endfunction
-

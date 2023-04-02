@@ -18,11 +18,7 @@
 //--------------------------------------------------------------------------
 // Input/Reference Data
 
-#ifdef LARGE_DATA
-#include "large_data.h"
-#else
 #include "dataset1.h"
-#endif
 
 //--------------------------------------------------------------------------
 // vvadd function

@@ -35,11 +35,7 @@
 // Input/Reference Data
 
 #define type int
-#ifdef LARGE_DATA
-#include "large_data.h"
-#else
 #include "dataset1.h"
-#endif
 
 // Swap macro for swapping two values.
 

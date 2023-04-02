@@ -8,11 +8,11 @@ SHELL := /bin/bash
 default: all
 
 bmarkdir := $(CURDIR)
-build_dir := $(bmarkdir)/../build/benchmarks
-bin_dir := $(build_dir)/bin
-obj_dir := $(build_dir)/obj
-dump_dir := $(build_dir)/dump
-vmh_dir := $(build_dir)/vmh
+bmarks_build_dir := $(bmarkdir)/../build/benchmarks
+bmarks_build_bin_dir := $(bmarks_build_dir)/bin
+bmarks_build_obj_dir := $(bmarks_build_dir)/obj
+bmarks_build_dump_dir := $(bmarks_build_dir)/dump
+bmarks_build_vmh_dir := $(bmarks_build_dir)/vmh
 
 #--------------------------------------------------------------------
 # Sources
@@ -26,77 +26,76 @@ bmarks = \
 	multiply \
 
 bmarks_host = \
+	median \
+	qsort \
+	towers \
+	vvadd \
+	multiply \
 
 #--------------------------------------------------------------------
 # Build rules
 #--------------------------------------------------------------------
 
-HOST_OPTS := -std=gnu99 -DPREALLOCATE=0 -DHOST_DEBUG=1 -I$(commondir)
-HOST_COMP := gcc $(HOST_OPTS)
+HOST_OPTS = -std=gnu99 -DPREALLOCATE=0 -DHOST_DEBUG=1 -I$(bmarkdir)/common
+HOST_COMP = gcc $(HOST_OPTS)
 
-#RISCV_TOOL_DIR := /mit/6.175/rv32-gcc/bin
-RISCV_TOOL_DIR := /home/adam/riscv32-special-a/bin
-
-RISCV_PREFIX := $(RISCV_TOOL_DIR)/riscv32-unknown-elf
+RISCV_TOOL_DIR = /opt/riscv/bin
+RISCV_PREFIX = $(RISCV_TOOL_DIR)/riscv32-unknown-elf
 # gcc
-RISCV_GCC := $(RISCV_PREFIX)-gcc
-#RISCV_GCC_OPTS := -static -Wa,-march=RVI -std=gnu99 -O2 -ffast-math -fno-common -fno-builtin-printf
-RISCV_GCC_OPTS := -static -Wa,-march=rv32ia -std=gnu99 -O2 -ffast-math -fno-common -fno-builtin-printf
+RISCV_GCC = $(RISCV_PREFIX)-gcc
+# RISCV_GCC_OPTS = -static -Wa,-march=RVI -std=gnu99 -O2 -ffast-math -fno-common -fno-builtin-printf
+RISCV_GCC_OPTS = -static -Wa,-march=rv32i -mabi=ilp32 -std=gnu99 -O2 -ffast-math -fno-common -fno-builtin-printf
 
-incs := -I$(bmarkdir)/../env -I$(bmarkdir)/common
-bmarks_defs := -DPREALLOCATE=0 -DHOST_DEBUG=0
 # link
-RISCV_LINK := $(RISCV_GCC) -T$(bmarkdir)/common/test.ld $(incs)
-RISCV_LINK_OPTS := -nostdlib -nostartfiles -ffast-math -lc -lgcc
+RISCV_LINK = $(RISCV_GCC) -T$(bmarkdir)/common/test.ld $(incs) -I$(bmarks_build_obj_dir)/
+RISCV_LINK_OPTS = -nostdlib -nostartfiles -ffast-math -lc -lgcc
 # objdump
-RISCV_OBJDUMP := $(RISCV_PREFIX)-objdump --disassemble --disassemble-zeroes --section=.text --section=.text.startup --section=.data
+RISCV_OBJDUMP = $(RISCV_PREFIX)-objdump --disassemble --disassemble-zeroes --section=.text --section=.text.startup --section=.data
 # convert to VMH: 64KB memory
-RISCV_ELF2HEX := $(RISCV_TOOL_DIR)/elf2hex
-VMH_WIDTH := 8
-VMH_DEPTH := 32768
+ELF2HEX_TOOL_DIR = /opt/riscv/bin
+RISCV_ELF2HEX = $(ELF2HEX_TOOL_DIR)/elf2hex
+VMH_WIDTH = 8
+VMH_DEPTH = 65536
 
-# files
-c_srcs := $(foreach bench,$(bmarks),$(wildcard $(bmarkdir)/$(bench)/*.c))
-c_srcs += $(bmarkdir)/common/syscalls.c
-c_objs := $(patsubst $(bmarkdir)/%.c,$(obj_dir)/%.o,$(c_srcs))
+VPATH += $(addprefix $(bmarkdir)/, $(bmarks))
+VPATH += $(bmarkdir)/common
+VPATH += $(bmarks_build_bin_dir)
+VPATH += $(bmarks_build_obj_dir)
+VPATH += $(bmarks_build_dump_dir)
+VPATH += $(bmarks_build_vmh_dir)
 
-asm_srcs := $(bmarkdir)/common/crt.S
-asm_objs := $(patsubst $(bmarkdir)/%.S,$(obj_dir)/%.o,$(asm_srcs))
+incs  += -I$(bmarkdir)/../env -I$(bmarkdir)/common $(addprefix -I$(bmarkdir)/, $(bmarks))
+
+include $(patsubst %, $(bmarkdir)/%/bmark.mk, $(bmarks))
 
 #------------------------------------------------------------
 # Build and run benchmarks on riscv simulator
 
-bmarks_riscv_bin  := $(patsubst %,$(bin_dir)/%.riscv,$(bmarks))
-bmarks_riscv_dump := $(patsubst %,$(dump_dir)/%.riscv.dump,$(bmarks))
-bmarks_riscv_vmh  := $(patsubst %,$(vmh_dir)/%.riscv.vmh,$(bmarks))
+bmarks_riscv_bin  = $(addsuffix .riscv, $(bmarks))
+bmarks_riscv_dump = $(addsuffix .riscv.dump, $(bmarks))
+bmarks_riscv_vmh = $(addsuffix .riscv.vmh, $(bmarks))
 
-$(bmarks_riscv_vmh): $(vmh_dir)/%.riscv.vmh: $(bin_dir)/%.riscv
-	@echo "@0" > $(vmh_dir)/temp
-	$(RISCV_ELF2HEX) $(VMH_WIDTH) $(VMH_DEPTH) $< >> $(vmh_dir)/temp
-	python $(bmarkdir)/../trans_vmh.py $(vmh_dir)/temp $@
+bmarks_defs   = -DPREALLOCATE=0 -DHOST_DEBUG=0
+bmarks_cycles = 80000
 
-$(bmarks_riscv_dump): $(dump_dir)/%.riscv.dump: $(bin_dir)/%.riscv
-	$(RISCV_OBJDUMP) $< > $@
+$(bmarks_riscv_vmh): %.riscv.vmh: %.riscv
+	@echo $(basename $<)
+	@echo "@0" > $(bmarks_build_vmh_dir)/temp
+	$(RISCV_ELF2HEX) $(VMH_WIDTH) $(VMH_DEPTH) $(bmarks_build_bin_dir)/$< >> $(bmarks_build_vmh_dir)/temp
+	$(bmarkdir)/../trans_vmh.py $(bmarks_build_vmh_dir)/temp $(bmarks_build_vmh_dir)/$@
 
-.SECONDEXPANSION:
+$(bmarks_riscv_dump): %.riscv.dump: %.riscv
+	$(RISCV_OBJDUMP) $(bmarks_build_bin_dir)/$< > $(bmarks_build_dump_dir)/$@
 
-PERCENT := % # escape % using secondary expansion
+%.o: %.c
+	$(RISCV_GCC) $(RISCV_GCC_OPTS) $(bmarks_defs) \
+	             -c $(incs) $< -o $(bmarks_build_obj_dir)/$@
 
-# we must be in the same folder of crt.o
-# and crt.o cannot have directory prefix in the gcc link command
-$(bmarks_riscv_bin): $(bin_dir)/%.riscv: $$(filter $(obj_dir)/$$(basename $$(notdir $$@))/$$(PERCENT).o $(obj_dir)/common/$$(PERCENT).o,$(c_objs) $(asm_objs))
-	cd $(obj_dir)/common; \
-	$(RISCV_LINK) $(wildcard $(obj_dir)/$(basename $(notdir $@))/*.o) $(notdir $(wildcard $(obj_dir)/common/*.o)) -o $@ $(RISCV_LINK_OPTS)
+%.o: %.S
+	$(RISCV_GCC) $(RISCV_GCC_OPTS) $(bmarks_defs) -D__ASSEMBLY__=1 \
+	             -c $(incs) $< -o $(bmarks_build_obj_dir)/$@
 
-$(c_objs): $(obj_dir)/%.o: $(bmarkdir)/%.c
-	mkdir -p $(dir $@)
-	$(RISCV_GCC) $(RISCV_GCC_OPTS) $(bmarks_defs) -c $(incs) -I$(dir $<) $< -o $@
-
-$(asm_objs): $(obj_dir)/%.o: $(bmarkdir)/%.S
-	mkdir -p $(dir $@)
-	$(RISCV_GCC) $(RISCV_GCC_OPTS) $(bmarks_defs) -D__ASSEMBLY__=1 -c $(incs) $< -o $@
-
-riscv: $(bin_dir) $(obj_dir) $(dump_dir) $(vmh_dir) $(bmarks_riscv_dump) $(bmarks_riscv_vmh)
+riscv: $(bmarks_build_bin_dir) $(bmarks_build_obj_dir) $(bmarks_build_dump_dir) $(bmarks_build_vmh_dir) $(bmarks_riscv_dump) $(bmarks_riscv_vmh)
 
 
 #------------------------------------------------------------
@@ -104,21 +103,21 @@ riscv: $(bin_dir) $(obj_dir) $(dump_dir) $(vmh_dir) $(bmarks_riscv_dump) $(bmark
 
 bmarks_host_bin = $(addsuffix .host, $(bmarks_host))
 
-host: $(bin_dir) $(bmarks_host_bin)
+host: $(bmarks_build_bin_dir) $(bmarks_host_bin)
 
 
 #------------------------------------------------------------
 # Default
-$(bin_dir):
+$(bmarks_build_bin_dir):
 	mkdir -p $@
 
-$(obj_dir):
+$(bmarks_build_obj_dir):
 	mkdir -p $@
 
-$(dump_dir):
+$(bmarks_build_dump_dir):
 	mkdir -p $@
 
-$(vmh_dir):
+$(bmarks_build_vmh_dir):
 	mkdir -p $@
 
 all: riscv
@@ -126,7 +125,7 @@ all: riscv
 # Clean up
 
 clean:
-	rm -rf $(build_dir)
+	rm -rf $(bmarks_build_dir)
 
 .PHONY: all clean riscv host
 
