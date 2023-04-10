@@ -16,35 +16,52 @@ module mkMyConflictFifo( Fifo#(n, t) ) provisos (Bits#(t,tSz));
     Vector#(n, Reg#(t))     data     <- replicateM(mkRegU());
     Reg#(Bit#(TLog#(n)))    enqP     <- mkReg(0);
     Reg#(Bit#(TLog#(n)))    deqP     <- mkReg(0);
-    Reg#(Bit#(TLog#(n)))    size     <- mkReg(0);
+    Reg#(Bool)              notEmpty <- mkReg(False);
+    Reg#(Bool)              notFull  <- mkReg(True);
+    Bit#(TLog#(n))          size     = fromInteger(valueOf(n)-1);
 
     method Bool notFull();
-        return !(size == fromInteger(valueOf(n)));
+        return notFull;
     endmethod
 
-    method Action enq (t x) if (!(size == fromInteger(valueOf(n))));
+    method Action enq (t x) if (notFull);
+        notEmpty <= True;
         data[enqP] <= x;
-        enqP <= (enqP + 1) % fromInteger(valueOf(n));
-        size <= size + 1;
+        let nextEnqP = enqP + 1;
+        if (nextEnqP > size) begin
+            nextEnqP = 0;
+        end
+        if (nextEnqP == deqP) begin
+            notFull <= False;
+        end
+        enqP <= nextEnqP;
     endmethod
 
     method Bool notEmpty();
-        return !(size == 0);
+        return notEmpty;
     endmethod
 
-    method Action deq() if (!(size == 0));
-        deqP <= (deqP + 1) % fromInteger(valueOf(n));
-        size <= size - 1;
+    method Action deq() if (notEmpty);
+        notFull <= True;
+        let nextDeqP = deqP + 1;
+        if (nextDeqP > size) begin
+            nextDeqP = 0;
+        end
+        if (nextDeqP == enqP) begin
+            empty <= True;
+        end
+        deqP <= nextDeqP;
     endmethod
 
-    method t first() if (!(size == 0));
+    method t first() if (notEmpty);
         return data[deqP];
     endmethod
 
     method Action clear();
         deqP <= 0;
         enqP <= 0;
-        size <= 0;
+        notEmpty <= False;
+        notFull <= True;
     endmethod
 
 endmodule
@@ -56,41 +73,58 @@ module mkMyPipelineFifo( Fifo#(n, t) ) provisos (Bits#(t,tSz));
     Vector#(n, Reg#(t))     data     <- replicateM(mkRegU());
     Ehr#(3, Bit#(TLog#(n))) enqP     <- mkEhr(0);
     Ehr#(3, Bit#(TLog#(n))) deqP     <- mkEhr(0);
-    Ehr#(3, Bit#(TLog#(n))) size     <- mkEhr(0);
+    Ehr#(3, Bool)           notEmpty <- mkEhr(False);
+    Ehr#(3, Bool)           notFull  <- mkEhr(True);
+    Bit#(TLog#(n))          size     = fromInteger(valueOf(n)-1);
 
     // 0
 
     method Bool notEmpty();
-        return !(size[0] == 0);
+        return notEmpty[0];
     endmethod
 
-    method Action deq() if (!(size[0] == 0));
-        deqP[0] <= (deqP[0] + 1) % fromInteger(valueOf(n));
-        size[0] <= size[0] - 1;
-    endmethod
-
-    method t first() if (!(size[0] == 0));
-        return data[deqP[0]];
+    method Action deq() if (notEmpty[0]);
+        notFull[0] <= True;
+        let nextDeqP = deqP[0] + 1;
+        if (nextDeqP > size) begin
+            nextDeqP = 0;
+        end
+        if (nextDeqP == enqP[0]) begin
+            notEmpty[0] <= False;
+        end
+        deqP[0] <= nextDeqP;
     endmethod
 
     // 1
 
     method Bool notFull();
-        return !(size[1] == fromInteger(valueOf(n)));
+        return notFull[1];
     endmethod
 
-    method Action enq (t x) if (!(size[1] == fromInteger(valueOf(n))));
-        size[1] <= size[1] + 1;
+    method Action enq (t x) if (notFull[1]);
+        notEmpty[1] <= True;
         data[enqP[1]] <= x;
-        enqP[1] <= (enqP[1] + 1) % fromInteger(valueOf(n));
+        let nextEnqP = enqP[1] + 1;
+        if (nextEnqP > size) begin
+            nextEnqP = 0;
+        end
+        if (nextEnqP == deqP[1]) begin
+            notFull[1] <= False;
+        end
+        enqP[1] <= nextEnqP;
+    endmethod
+
+    method t first() if (notEmpty[0]);
+        return data[deqP[0]];
     endmethod
 
     // 2
 
     method Action clear();
-        deqP[2] <= 0;
-        enqP[2] <= 0;
-        size[2] <= 0;
+        deqP[2]     <= 0;
+        enqP[2]     <= 0;
+        notEmpty[2] <= False;
+        notFull[2]  <= True;
     endmethod
 
 endmodule
@@ -102,32 +136,48 @@ module mkMyBypassFifo( Fifo#(n, t) ) provisos (Bits#(t,tSz));
     Vector#(n, Ehr#(2, t))  data     <- replicateM(mkEhrU());
     Ehr#(3, Bit#(TLog#(n))) enqP     <- mkEhr(0);
     Ehr#(3, Bit#(TLog#(n))) deqP     <- mkEhr(0);
-    Ehr#(3, Bit#(TLog#(n))) size     <- mkEhr(0);
+    Ehr#(3, Bool)           notEmpty <- mkEhr(False);
+    Ehr#(3, Bool)           notFull  <- mkEhr(True);
+    Bit#(TLog#(n))          size     = fromInteger(valueOf(n)-1);
 
     // 0
 
     method Bool notFull();
-        return !(size[0] == fromInteger(valueOf(n)));
+        return notFull[0];
     endmethod
 
-    method Action enq (t x) if (!(size[0] == fromInteger(valueOf(n))));
+    method Action enq (t x) if (notFull[0]);
+        notEmpty[0] <= True;
         data[enqP[0]][0] <= x;
-        enqP[0] <= (enqP[0] + 1) % fromInteger(valueOf(n));
-        size[0] <= size[0] + 1;
+        let nextEnqP = enqP[0] + 1;
+        if (nextEnqP > size) begin
+            nextEnqP = 0;
+        end
+        if (nextEnqP == deqP[0]) begin
+            notFull[0] <= False;
+        end
+        enqP[0] <= nextEnqP;
     endmethod
 
     // 1
 
     method Bool notEmpty();
-        return !(size[1] == 0);
+        return notEmpty[1];
     endmethod
 
-    method Action deq() if (!(size[1] == 0));
-        deqP[1] <= (deqP[1] + 1) % fromInteger(valueOf(n));
-        size[1] <= size[1] - 1;
+    method Action deq() if (notEmpty[1]);
+        notFull[1] <= True;
+        let nextDeqP = deqP[1] + 1;
+        if (nextDeqP > size) begin
+            nextDeqP = 0;
+        end
+        if (nextDeqP == enqP[1]) begin
+            notEmpty[1] <= False;
+        end
+        deqP[1] <= nextDeqP;
     endmethod
 
-    method t first() if (!(size[1] == 0));
+    method t first() if (notEmpty[1]);
         return data[deqP[1]][1];
     endmethod
 
@@ -136,7 +186,8 @@ module mkMyBypassFifo( Fifo#(n, t) ) provisos (Bits#(t,tSz));
     method Action clear();
         deqP[2] <= 0;
         enqP[2] <= 0;
-        size[2] <= 0;
+        notEmpty[2] <= False;
+        notFull[2] <= True;
     endmethod
 endmodule
 
@@ -147,56 +198,67 @@ module mkMyCFFifo( Fifo#(n, t) ) provisos (Bits#(t,tSz));
     Vector#(n, Reg#(t))     data         <- replicateM(mkRegU());
     Ehr#(2, Bit#(TLog#(n))) enqP         <- mkEhr(0);
     Ehr#(2, Bit#(TLog#(n))) deqP         <- mkEhr(0);
-    Ehr#(2, Bit#(TLog#(n))) size         <- mkEhr(0);
-
+    Ehr#(2, Bool)           notEmpty     <- mkEhr(False);
+    Ehr#(2, Bool)           notFull      <- mkEhr(True);
     Ehr#(2, Bool)           req_deq      <- mkEhr(False);
     Ehr#(2, Maybe#(t))      req_enq      <- mkEhr(tagged Invalid);
+    Bit#(TLog#(n))          size         = fromInteger(valueOf(n)-1);
 
     (*no_implicit_conditions, fire_when_enabled*)
     rule canonicalize;
         // enq and deq
-        if ((!(size[0] == fromInteger(valueOf(n))) && isValid(req_enq[1])) && (!(size[0] == 0) && req_deq[1])) begin
+        if ((notFull[0] && isValid(req_enq[1])) && (notEmpty[0] && req_deq[1])) begin
+            notEmpty[0] <= True;
+            notFull[0] <= True;
             data[enqP[0]] <= fromMaybe(?, req_enq[1]);
-            enqP[0] <= (enqP[0] + 1) % fromInteger(valueOf(n));
-            deqP[0] <= (deqP[0] + 1) % fromInteger(valueOf(n));
+            enqP[0] <= nextEnqP;
+            deqP[0] <= nextDeqP;
         // deq only
-        end else if (!(size[0] == 0) && req_deq[1]) begin
-            deqP[0] <= (deqP[0] + 1) % fromInteger(valueOf(n));
-            size[0] <= size[0] - 1;
+        end else if (notEmpty[0] && req_deq[1]) begin
+            if (nextDeqP == enqP[0]) begin
+                notEmpty[0] <= False;
+            end
+            notFull[0] <= True;
+            deqP[0] <= nextDeqP;
         // enq only
-        end else if (!(size[0] == fromInteger(valueOf(n))) && isValid(req_enq[1])) begin
-            enqP[0] <= (enqP[0] + 1) % fromInteger(valueOf(n));
+        end else if (notFull[0] && isValid(req_enq[1])) begin
+            if (nextEnqP == deqP[0]) begin
+                notFull[0] <= False;
+            end
+            notEmpty[0] <= True;
             data[enqP[0]] <= fromMaybe(?, req_enq[1]);
-            size[0] <= size[0] + 1;
+            enqP[0] <= nextEnqP;
         end
         req_enq[1] <= tagged Invalid;
         req_deq[1] <= False;
     endrule
 
     method Bool notFull();
-        return !(size[0] == fromInteger(valueOf(n)));
+        return notFull[0];
     endmethod
 
-    method Action enq (t x) if (!(size[0] == fromInteger(valueOf(n))));
+    method Action enq (t x) if (notFull[0]);
         req_enq[0] <= tagged Valid (x);
     endmethod
 
     method Bool notEmpty();
-        return !(size[0] == 0);
+        return notEmpty[0];
     endmethod
 
-    method Action deq() if (!(size[0] == 0));
+    method Action deq() if (notEmpty[0]);
         req_deq[0] <= True;
+
     endmethod
 
-    method t first() if (!(size[0] == 0));
+    method t first() if (notEmpty[0]);
         return data[deqP[0]];
     endmethod
 
     method Action clear();
         enqP[1] <= 0;
         deqP[1] <= 0;
-        size[1] <= 0;
+        notEmpty[1] <= False;
+        notFull[1] <= True;
     endmethod
 
 endmodule

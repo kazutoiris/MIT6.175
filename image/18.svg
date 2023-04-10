@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg2714"
+   width="960"
+   height="615.39935"
+   viewBox="0 0 960 615.39935"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2718">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2742">
+      <path
+         d="M 0,0 H 720 V 540 H 0 Z"
+         id="path2740" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2818">
+      <path
+         d="M 0,0 H 720 V 540 H 0 Z"
+         id="path2816" />
+    </clipPath>
+  </defs>
+  <g
+     id="g2722"
+     transform="matrix(1.3333333,0,0,-1.3333333,0,615.39936)">
+    <text
+       xml:space="preserve"
+       transform="matrix(1,0,0,-1,680.3251,6.235)"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12px;font-family:Arial;-inkscape-font-specification:ArialMT;writing-mode:lr-tb;fill:#000099;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="text2728"><tspan
+         x="0 6.6599998"
+         y="0"
+         id="tspan2726">22</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(1,0,0,-1,19.2,11.305)"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.02px;font-family:Arial;-inkscape-font-specification:ArialMT;writing-mode:lr-tb;fill:#000099;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="text2732"><tspan
+         x="0 6.6602941 13.320588 18.899723 24.420744 29.941765 32.521915 35.282425 37.982815 45.242306 50.822441 53.582951 60.242245 65.763268 71.284286 76.805305 79.385452 86.645943 92.226082 100.56573 106.14587 111.66689 114.4274 119.94842 123.30812 125.88828 132.54857 135.90828 140.94833 146.52847 148.7489 151.50841 157.08855 162.0685 164.76888 170.2899 173.64961"
+         y="0"
+         id="tspan2730">EE524 / CptS561 Computer Architecture</tspan></text>
+    <path
+       d="M 0.03,305.97 H 720 V 419.969 H 0.03 Z"
+       style="fill:#9ae69a;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path2734" />
+    <g
+       id="g2736">
+      <g
+         id="g2738"
+         clip-path="url(#clipPath2742)">
+        <path
+           d="m 0.03,419.97 h 720 v -114 h -720 z"
+           style="fill:none;stroke:#006600;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+           id="path2744" />
+      </g>
+    </g>
+    <text
+       xml:space="preserve"
+       transform="matrix(1,0,0,-1,205.01,435.78)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:36px;font-family:Arial;-inkscape-font-specification:Arial-BoldMT;writing-mode:lr-tb;fill:#fc0128;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="text2748"><tspan
+         x="0 25.981199 48.013199 70.045197 84.024002 104.076 124.128 144.17999 154.08 164.0988 184.1508 194.0508 204.0696 226.10159 236.06281 262.04401 284.07599"
+         y="0"
+         id="tspan2746">Address is in BTB</tspan></text>
+    <g
+       id="g2750"
+       transform="translate(126.03,365.97)">
+      <path
+         d="M 0,0 H 318"
+         style="fill:none;stroke:#dc0081;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+         id="path2752" />
+    </g>
+    <g
+       id="g2754"
+       transform="translate(162,366)">
+      <path
+         d="M 0,0 117,54 234,0 117,-54 Z"
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+         id="path2756" />
+    </g>
+    <g
+       id="g2758"
+       transform="translate(162,366)">
+      <path
+         d="M 0,0 117,54 234,0 117,-54 Z"
+         style="fill:none;stroke:#dc0081;stroke-width:2.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+         id="path2760" />
+    </g>
+    <text
+       xml:space="preserve"
+       transform="matrix(1,0,0,-1,221.33,369.24)"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'Times New Roman';-inkscape-font-specification:TimesNewRomanPSMT;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="text2766"><tspan
+         x="0 14.64 26.639999 33.299999 41.279999 53.279999 59.279999 67.260002 79.260002 91.260002 103.26 115.26"
+         y="0"
+         id="tspan2762">Entry found </tspan><tspan
+         x="13.68 20.34 32.34 38.279999 54.287998 68.928001 84.935997 90.935997"
+         y="28.799999"
+         id="tspan2764">in BTB ?</tspan></text>
+    <g
+       id="g2768"
+       transform="translate(126.03,365.97)">
+      <path
+         d="M 0,0 V -97"
+         style="fill:none;stroke:#dc0081;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+         id="path2770" />
+    </g>
+    <g
+       id="g2772"
+       transform="translate(129.0303,269.9698)">
+      <path
+         d="M 0,0 -3,-6 -6,0 Z"
+         style="fill:#dc0081;fill-opacity:1;fill-rule:evenodd;stroke:none"
+         id="path2774" />
+    </g>
+    <g
+       id="g2776"
+       transform="translate(444.03,365.97)">
+      <path
+         d="M 0,0 V -55"
+         style="fill:none;stroke:#dc0081;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+         id="path2778" />
+    </g>
+    <g
+       id="g2780"
+       transform="translate(447.0303,311.9698)">
+      <path
+         d="M 0,0 -3,-6 -6,0 Z"
+         style="fill:#dc0081;fill-opacity:1;fill-rule:evenodd;stroke:none"
+         id="path2782" />
+    </g>
+    <text
+       xml:space="preserve"
+       transform="matrix(1,0,0,-1,115.2,375.24)"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'Times New Roman';-inkscape-font-specification:TimesNewRomanPSMT;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="text2786"><tspan
+         x="0 17.327999 288 302.92801 313.608"
+         y="0"
+         id="tspan2784">NoYes</tspan></text>
+    <g
+       id="g2788"
+       transform="translate(294.03,185.97)">
+      <path
+         d="M 0,0 H 318"
+         style="fill:none;stroke:#dc0081;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+         id="path2790" />
+    </g>
+    <g
+       id="g2792"
+       transform="translate(330,186)">
+      <path
+         d="M 0,0 117,48 234,0 117,-48 Z"
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+         id="path2794" />
+    </g>
+    <g
+       id="g2796"
+       transform="translate(330,186)">
+      <path
+         d="M 0,0 117,48 234,0 117,-48 Z"
+         style="fill:none;stroke:#dc0081;stroke-width:2.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+         id="path2798" />
+    </g>
+    <text
+       xml:space="preserve"
+       transform="matrix(1,0,0,-1,386.0299,183.24)"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'Times New Roman';-inkscape-font-specification:TimesNewRomanPSMT;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="text2804"><tspan
+         x="0 6.6599998 17.34 29.34 40.02 52.02 57.900002 69.900002 77.879997 88.559998 100.56 111.24 123.24"
+         y="0"
+         id="tspan2800">taken branch?</tspan><tspan
+         x="-96.839996 -79.512001 161.16 176.088 186.76801"
+         y="-12"
+         id="tspan2802">NoYes</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(1,0,0,-1,649.2,347.16)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:28.02px;font-family:Arial;-inkscape-font-specification:Arial-BoldMT;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="text2808"><tspan
+         x="0 7.8007679"
+         y="0"
+         id="tspan2806">IF</tspan></text>
+    <path
+       d="M 0.03,0 H 720 V 113.97 H 0.03 Z"
+       style="fill:#cecece;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path2810" />
+    <g
+       id="g2812">
+      <g
+         id="g2814"
+         clip-path="url(#clipPath2818)">
+        <path
+           d="m 0.03,113.97 h 720 v -114 h -720 z"
+           style="fill:none;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+           id="path2820" />
+      </g>
+    </g>
+    <text
+       xml:space="preserve"
+       transform="matrix(1,0,0,-1,649.2,23.16)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:28.02px;font-family:Arial;-inkscape-font-specification:Arial-BoldMT;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="text2826"><tspan
+         x="0 18.66132"
+         y="0"
+         id="tspan2822">EX</tspan><tspan
+         x="-5.9962802 1.8044879"
+         y="-155.98734"
+         id="tspan2824">ID</tspan></text>
+    <path
+       d="m 348.03,305.97 h 198 v -30.36 h -198 z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#fc0128;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+       id="path2828" />
+    <text
+       xml:space="preserve"
+       transform="matrix(1,0,0,-1,360.4125,285)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:18px;font-family:'Times New Roman';-inkscape-font-specification:TimesNewRomanPS-BoldMT;writing-mode:lr-tb;fill:#006600;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="text2832"><tspan
+         x="0 10.0206 18 28.020599 38.039398 42.48 51.48 61.500599 67.494598 71.994598 82.015198 89.694 97.675201 107.694 112.6746 120.654 126.648 134.6274 144.64799 149.14799 160.12801"
+         y="0"
+         id="tspan2830">Send out predicted PC</tspan></text>
+    <g
+       id="g2834"
+       transform="translate(444.03,275.97)">
+      <path
+         d="M 0,0 V -37"
+         style="fill:none;stroke:#fc0128;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+         id="path2836" />
+    </g>
+    <g
+       id="g2838"
+       transform="translate(447.0303,239.9699)">
+      <path
+         d="M 0,0 -3,-6 -6,0 Z"
+         style="fill:#fc0128;fill-opacity:1;fill-rule:evenodd;stroke:none"
+         id="path2840" />
+    </g>
+    <g
+       id="g2842"
+       transform="translate(294.03,185.97)">
+      <path
+         d="M 0,0 V -79"
+         style="fill:none;stroke:#dc0081;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+         id="path2844" />
+    </g>
+    <g
+       id="g2846"
+       transform="translate(297.0304,107.9699)">
+      <path
+         d="M 0,0 -3,-6 -6,0 Z"
+         style="fill:#dc0081;fill-opacity:1;fill-rule:evenodd;stroke:none"
+         id="path2848" />
+    </g>
+    <path
+       d="m 198.03,101.97 h 210 V 17.49 h -210 z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#fc0128;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+       id="path2850" />
+    <text
+       xml:space="preserve"
+       transform="matrix(1,0,0,-1,222.3525,81)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:18px;font-family:'Times New Roman';-inkscape-font-specification:TimesNewRomanPS-BoldMT;writing-mode:lr-tb;fill:#006600;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="text2858"><tspan
+         x="0 16.979401 21.959999 28.98 39.000599 46.679401 54.660599 64.679398 69.660004 77.639397 83.6334 91.612801 101.6334 106.1874 116.208 124.1874 133.18739 143.20799 151.18739"
+         y="0"
+         id="tspan2852">Mispredicted branch</tspan><tspan
+         x="-10.44 3.5406001 8.5193996 13.5 18.4806 23.034599 29.028601 37.0098 43.003799 50.9832 61.003799 66.997803 71.551804 79.230598 87.2118 94.231796 100.2258 109.2258 117.2052 123.1992 127.6992 133.69321 141.67261 147.6666 155.646 165.6666 171.6606"
+         y="32.400002"
+         id="tspan2854">Kill fetch; restart fetch; </tspan><tspan
+         x="-5.9400001 4.0805998 12.06 17.0406 25.02 31.014 38.995201 43.5546 51.534 61.5546 67.548599 75.5298 84.5298 89.0298 95.023804 102.7044 111.7044 126.6984 131.19839 143.20441 155.2104"
+         y="54"
+         id="tspan2856">delete entry from BTB</tspan></text>
+    <g
+       id="g2860"
+       transform="translate(612.03,185.97)">
+      <path
+         d="M 0,0 V -79"
+         style="fill:none;stroke:#dc0081;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+         id="path2862" />
+    </g>
+    <g
+       id="g2864"
+       transform="translate(615.0303,107.9699)">
+      <path
+         d="M 0,0 -3,-6 -6,0 Z"
+         style="fill:#dc0081;fill-opacity:1;fill-rule:evenodd;stroke:none"
+         id="path2866" />
+    </g>
+    <path
+       d="M 534,102 H 690 V 63 H 534 Z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#33cc33;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+       id="path2868" />
+    <text
+       xml:space="preserve"
+       transform="matrix(1,0,0,-1,548.6299,75.24)"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'Times New Roman';-inkscape-font-specification:TimesNewRomanPSMT;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="text2872"><tspan
+         x="0 17.34 34.68 40.740002 54.060001 66.779999 84.120003 98.760002 113.4"
+         y="0"
+         id="tspan2870">NO STALLS</tspan></text>
+  </g>
+</svg>
